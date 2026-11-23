@@ -1,44 +1,50 @@
-# Arch Linux 盒装安装媒介
+# Arch Linux Boxed Installation Media
 
-> 本仓库 fork 自 [Isoheptane/arch-media-box](https://github.com/Isoheptane/arch-media-box)，在其基础上增加了日文和英文版本。
->
 > This is a fork of [Isoheptane/arch-media-box](https://github.com/Isoheptane/arch-media-box), with Japanese and English versions added.
->
-> [Isoheptane/arch-media-box](https://github.com/Isoheptane/arch-media-box) のフォークで、日本語版と英語版を追加しています。
 
-这是一个由 [Debian 小药盒](https://github.com/moesoha/debian-media-box) 启发的 Arch Linux 盒装安装介质的平面设计。
+A graphic design for a boxed Arch Linux installation medium, inspired by the [Debian Medicine Box](https://github.com/moesoha/debian-media-box).
 
-![Install Medium](render.jpg)
+![Install Medium](media/render.jpg)
 
-| 包装盒          | 说明书                                  |
-| --------------- | --------------------------------------- |
-| ![Box](box.jpg) | ![Install Instruction](instruction.jpg) |
+| Box                   | Instruction                                   |
+| --------------------- | --------------------------------------------- |
+| ![Box](media/box.jpg) | ![Install Instruction](media/instruction.jpg) |
 
-尽管 Arch Linux 的 Logo 与某药品并无太多相似之处，但既然已经存在了 Debian 盒装安装介质的梗，那整一个 Arch Linux 盒装安装介质似乎也没问题吧。
+The Arch Linux logo doesn't look much like a certain medicine, but since the Debian boxed installation medium meme already exists, a boxed Arch Linux installation medium seems fine too.
 
-## 使用
+## Repository layout
 
-下载 `box_cmyk.pdf` 文件后打印即可。
+| Directory        | Language           | Box (print-ready, CMYK) | Box (SVG)                                   | Instruction                                |
+| ---------------- | ------------------ | ----------------------- | ------------------------------------------- | ------------------------------------------ |
+| `cn (original)/` | Chinese (original) | `box_cmyk.pdf`          | `box_source.svg`, `box.svg` (text as paths) | `instruction.tex`                          |
+| `en/`            | English            | `box_cmyk_en.pdf`       | `box_en.svg`                                | `instruction_en.tex`, `instruction_en.pdf` |
+| `ja/`            | Japanese           | `box_cmyk_ja.pdf`       | `box_ja.svg`                                | `instruction_ja.tex`, `instruction_ja.pdf` |
 
-`Instruction.tex` 需要使用 `xelatex` 编译，或者直接去 action 下载。
+Shared images used by the instruction sheets are in `assets/`, and the preview images above are in `media/`.
 
-## 源文件
+## Usage
 
-`box_source.svg` 为**原始的 InkScape SVG 文件**，`box.svg` 为**全部转换为路径后的 InkScape SVG 文件**。
+Download the `box_cmyk*.pdf` for your language and print it.
 
-在这里，由于 InkScape 无法使用 CMYK 色彩模式，因此需要先导入 RGB 色彩模式的 PDF 文件，然后再导入到 Scribus 中转换为 CMYK 色彩模式。
+The instruction sheets are built with `xelatex` from the `.tex` files, or you can download them from the GitHub Actions artifacts.
 
-原始的 InkScape SVG 文件中文本并没有转换为路径，因此需要系统上安装有对应的字体。该项目使用的字体有：
+## Source files
+
+Inkscape cannot use the CMYK color mode, so the workflow is to export an RGB PDF, then import it into Scribus and convert it to CMYK.
+
+In the original Inkscape SVGs (`cn (original)/box_source.svg`), text is not converted to paths, so the corresponding fonts must be installed on your system. The fonts used by the boxes are:
 
 - Noto Sans
 - Noto Sans CJK SC
 - Montserrat
 - Inconsolata
 
-相应的，编译 `Instruction` 需要以下字体：
+Compiling the instruction sheets requires the following fonts:
 
-- DejaVu Sans
+- DejaVu Sans (Chinese and English)
+- zhsong (Chinese)
+- Harano Aji Gothic (Japanese)
 
-## 许可
+## License
 
-本作品采用 [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0/) 许可协议进行许可。
+This work is licensed under [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0/).

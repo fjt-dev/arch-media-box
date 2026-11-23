@@ -1,0 +1,381 @@
+% Japanese version of instruction.tex. Compile in this directory with xelatex.
+% Fonts: HaranoAji Gothic / Mincho (bundled with TeX Live).
+
+\documentclass{article}
+\setlength\parindent{0pt}
+\pagenumbering{gobble}
+
+\usepackage{geometry}
+\geometry{papersize={210mm,297mm}}
+\geometry{left=9mm,right=9mm,top=9mm,bottom=9mm}
+
+\usepackage{fontspec}
+\setmainfont{HaranoAjiGothic-Regular.otf}[BoldFont=HaranoAjiGothic-Bold.otf]
+\setsansfont{HaranoAjiGothic-Regular.otf}[BoldFont=HaranoAjiGothic-Bold.otf]
+
+\usepackage{xeCJK}
+\setCJKmainfont{HaranoAjiGothic-Regular.otf}[BoldFont=HaranoAjiGothic-Bold.otf]
+\setCJKsansfont{HaranoAjiGothic-Regular.otf}[BoldFont=HaranoAjiGothic-Bold.otf]
+\newCJKfontfamily\headingCJK{HaranoAjiMincho-Bold.otf}
+
+\usepackage[svgcolors]{xcolor}
+\usepackage{longfbox}
+\usepackage{epstopdf}
+\usepackage{float}
+\usepackage{xpatch}
+\usepackage{tipa}
+\usepackage[export]{adjustbox}
+\graphicspath{{../assets/}}
+\usepackage{enumitem}
+\usepackage{mdframed}
+
+\usepackage{multirow}
+\usepackage{tabularx}
+\renewcommand\tabularxcolumn[1]{m{#1}} % for vertical centering text in X column
+
+\usepackage{multicol}
+\usepackage[most]{tcolorbox}
+\usepackage{amssymb}
+\setlength{\columnsep}{3mm}
+
+\usepackage[explicit,compact]{titlesec}
+\titleformat{\section}{\normalfont\headingCJK}{}{0pt}{【#1】}
+
+% Three-column layout whose first two columns are merged at the top
+% https://tex.stackexchange.com/questions/475466/latex-three-column-layout-merging-two-of-them-at-the-begining
+%
+\newlength{\abstractwidth}
+\newlength{\columnshrink}
+\newsavebox{\twocolinsert}
+%
+\makeatletter
+\newlength{\resized@col}
+\newcounter{column@count}
+%
+\xpatchcmd{\multi@column@out}{
+	\process@cols\mult@gfirstbox{%
+		\setbox\count@
+		\vsplit\@cclv to\dimen@
+		\set@keptmarks
+		\setbox\count@
+		\vbox to\dimen@
+		{\unvbox\count@ \ifshr@nking\vfilmaxdepth\fi}%
+	}%
+}{
+	\process@cols\mult@gfirstbox{%
+		\global\advance\c@column@count\@ne
+		\resized@col\dimen@%
+		\ifnum\c@column@count=\tw@
+				\advance\resized@col-\columnshrink
+		\fi%
+		\setbox\count@
+		\vsplit\@cclv to\resized@col
+		\set@keptmarks
+		\setbox\count@
+		\vbox to\dimen@{
+			\ifnum
+				\c@column@count=\tw@ \vspace*{\columnshrink}
+			\fi
+			\unvbox\count@
+			\ifshr@nking\vfilmaxdepth\fi
+		}%
+	}%
+}{\typeout{Success}}{\typeout{Failure}}
+\makeatother
+
+% for designing header
+\newsavebox\mysavebox
+\newenvironment{imgminipage}[2][]{%
+   \def\imgcmd{\includegraphics[width=\wd\mysavebox, height=\dimexpr\ht\mysavebox+\dp\mysavebox\relax, #1]{#2}}%
+   \begin{lrbox}{\mysavebox}%
+   \begin{minipage}%
+}{%
+   \end{minipage}
+   \end{lrbox}%
+   \sbox\mysavebox{\setlength{\fboxrule}{0pt}\fbox{\usebox\mysavebox}}%
+   \mbox{\rlap{\raisebox{-\dp\mysavebox}{\imgcmd}}\usebox\mysavebox}%
+}
+
+% "archlinux" wordmark only: crop the icon off the logo-with-text artwork
+\newcommand{\archwordmark}[1]{\includegraphics[width=#1, trim=111bp 40bp 0bp 25bp, clip, valign=m]{archlinux-logo-with-text.eps}}
+
+\renewcommand{\labelitemi}{$\blacktriangleright$}
+
+\tcbset{
+    frame code={}
+    center title,
+    left=0pt,
+    right=0pt,
+    top=6pt,
+    bottom=0pt,
+    colback=gray!40,
+    colframe=white,
+    enlarge left by=0mm,
+    boxsep=0pt,
+    arc=0pt,outer arc=0pt,
+}
+
+\begin{document}
+\begin{multicols*}{3}
+
+	\setlength{\abstractwidth}{2\linewidth}
+	\addtolength{\abstractwidth}{\columnsep}
+	\savebox{\twocolinsert}{
+	\begin{minipage}{\abstractwidth}
+		\noindent 作成日：2023 年 07 月 13 日
+		\newline 改訂日：2019 年 07 月 06 日、2020 年 10 月 31 日、2021 年 07 月 04 日、
+		\newline 2021 年 08 月 14 日、2023 年 06 月 10 日、2023 年 07 月 13 日
+		\newline
+
+		\begin{mdframed}[leftline=false, rightline=false, innertopmargin=0pt, innerbottommargin=0pt, innerrightmargin=0pt, innerleftmargin=1.5em]
+			\archwordmark{0.17\abstractwidth}
+			\hfill
+			\begin{imgminipage}{header-background.eps}[c]{0.78\abstractwidth}
+				\vspace*{1.6em}
+				\hspace*{1.2em}{\LARGE Arch Linux インストールメディア 説明書}\par
+				\medskip
+				\hspace*{1.2em}{\large\bfseries 説明書をよくお読みのうえ、管理者の指導のもとでご使用ください}\par
+				\vspace*{1.4em}
+			\end{imgminipage}
+		\end{mdframed}
+
+
+		\begin{mdframed}[hidealllines=true, innerbottommargin=.5em, innertopmargin=0pt]
+			\sffamily
+
+			{\centering 警告 \par}
+
+			\bfseries
+			他の OS と併用するかどうかにかかわらず、Arch Linux をインストールするとディスク上のすべてのデータを失うおそれがあります。（【副作用】参照）
+
+			本説明書の情報および意見は法的助言を意図したものではありません。法的助言は弁護士にご相談ください。
+
+			一部のハードウェアメーカーは、自社ハードウェアのドライバの書き方を教えてくれません。また、ドライバのソースコードを自由ソフトウェアとして公開できないよう、関連文書の閲覧に秘密保持契約への署名を求めるメーカーもあります。これらの文書の使用が許可されていないため、それらのハードウェアは Linux では動作しません。
+		\end{mdframed}
+	\end{minipage}}
+	\setlength{\columnshrink}{\ht\twocolinsert}
+	\addtolength{\columnshrink}{\dp\twocolinsert}
+	\noindent\usebox{\twocolinsert}
+
+
+	\begin{tcolorbox}
+	\section*{ディストリビューション名}
+	\end{tcolorbox}
+	\begin{tabularx}{\linewidth}{@{}ll@{}}
+		一般名： & Arch Linux \\
+		正式名： & Arch Linux \\
+		英語発音： & \textipa{[a:t\textesh\ l\textsci n\textschwa ks]} \\
+	\end{tabularx}
+
+	\medskip
+
+
+	\begin{tcolorbox}
+	\section*{組成}
+	\end{tcolorbox}
+
+	汎用 x86-64 GNU/Linux ディストリビューションのベースシステム。ローリングリリース方式を採用し、最新の安定版ソフトウェアの提供に努めています。Arch Linux コミュニティの開発者がパッケージング、開発、保守を行っています。
+
+	\medskip
+
+
+	\begin{tcolorbox}
+	\section*{性状}
+	\end{tcolorbox}
+
+	本システムは GNU/Linux カーネルを採用したオペレーティングシステムで、インストール後は UEFI または Legacy ブートで起動できます。
+
+	\medskip
+
+
+	\begin{tcolorbox}
+	\section*{対応プラットフォーム}
+	\end{tcolorbox}
+
+	\begin{itemize}
+		\item x86-64 (AMD64) アーキテクチャのコンピュータ、サーバー、組み込み機器のみに対応しています。
+		\item 本パッケージのインストールメディアがどのプラットフォームに適合するかは、実機にてご確認ください。
+	\end{itemize}
+
+
+	\begin{tcolorbox}
+	\section*{規格}
+	\end{tcolorbox}
+
+	インストールメディア 1 本
+
+	\medskip
+
+	\begin{tcolorbox}
+	\section*{用法}
+	\end{tcolorbox}
+
+	USB デバイスから起動します。
+
+	起動方式はハードウェアに合わせて調整してください。通常は UEFI を使用します。
+
+	ハードウェア性能と個人のニーズに応じてインストール方法を選んでください。一般的にはコマンドラインで手動インストールを行い、それ以外の場合は Arch Linux installer スクリプトでインストールします。
+
+	ベースシステムのインストールとパッケージの設定が完了したら、デスクトップ環境とディスプレイマネージャーを適宜選択できます。
+
+	\medskip
+
+	\begin{tcolorbox}
+	\section*{副作用}
+	\end{tcolorbox}
+
+	Arch Linux には、ユーザーと開発者から報告されたソフトウェアの不具合を記録・管理するバグトラッキングシステムがあります。各不具合報告には番号が付けられ、修正済みとなるまで長期にわたって追跡されます。
+
+	詳細は https://bugs.archlinux.org/ をご覧ください。
+
+	\medskip
+
+
+	\begin{tcolorbox}
+	\section*{使用上の注意}
+	\end{tcolorbox}
+	\begin{itemize}[leftmargin=*]
+
+		\item 最低限のハードウェア要件を満たすこと
+
+		メモリとディスクの要件は下表のとおりです。
+
+		{\small\begin{tabularx}{\linewidth}{|X|X|X|X|}
+			\hline
+			区分 & RAM\newline （最低） & RAM\newline （推奨） & ディスク \\
+			\hline
+			デスクトップなし & 512MB & 1GB & 2GB \\
+			\hline
+			デスクトップあり & 1GB & 2GB & 10GB \\
+			\hline
+		\end{tabularx}}
+
+		必要に応じて、上表を下回る構成でインストールすることもできます。ただし、これらの推奨を無視した場合、多くのユーザーはインストールに失敗します。
+
+		\item ファームウェアが必要なデバイス
+
+		デバイスドライバに加えて、使用前にファームウェア（firmware）またはマイクロコード（microcode）の読み込みが必要なハードウェアもあります。
+
+	\end{itemize}
+
+
+	\begin{tcolorbox}
+	\section*{禁忌}
+	\end{tcolorbox}
+
+	操作中に次のいずれかが発生した、または発生しそうな場合は、直ちに操作を中止し、システムの復旧に備えてください。
+
+	\begin{itemize}[leftmargin=*]
+		\setlength{\itemsep}{0pt}
+		\setlength{\parskip}{0pt}
+		\setlength{\parsep}{0pt}
+
+		\item root 権限でルートディレクトリ以下を再帰的に削除する
+		\item デバイス名を確認せずに dd コマンドを使用する
+		\item デバイス名を確認せずにフォーマットを実行する
+		\item 確認せずにコマンドのリダイレクトを使用する
+		\item ネット上のスクリプトを確認せずに実行する
+		\item 放熱の悪い機器で長時間高負荷で使用する
+	\end{itemize}
+
+
+	\begin{tcolorbox}
+	\section*{相互作用}
+	\end{tcolorbox}
+	\begin{itemize}[leftmargin=*]
+		\setlength{\parindent}{0pt}
+
+		\item Windows との相互作用
+
+		デュアルブート環境で、もう一方の OS と Windows が同じファイルシステムにアクセスすると、問題やデータ損失が発生する可能性があります。この場合、ファイルシステムの実際の状態が、Windows が「起動」後に認識している状態と異なることがあり、さらに書き込むとファイルシステムが破損するおそれがあります。そのため、デュアルブート構成では、ファイルシステムの破損を防ぐために Windows の「高速スタートアップ」を無効にする必要があります。
+
+		まれに、Windows でシステム更新を行うと、再起動後にブートローダーが破壊され、Arch Linux が起動できなくなる事例が確認されています。また、インストール時に Windows と同じ物理ディスクの MBR にブート情報を書き込むと、Windows が正常に起動できなくなります。
+
+		\item 他の Linux ディストリビューションとの相互作用
+
+		Manjaro と併用すると、AUR がダウンするおそれがあります。
+
+	\end{itemize}
+
+
+	\begin{tcolorbox}
+	\section*{貯法}
+	\end{tcolorbox}
+
+	-40℃〜+70℃
+
+	すべてのインストールメディアは適切に保管し、インストール担当者以外の手に触れないようにしてください。
+
+	\medskip
+
+
+	\begin{tcolorbox}
+	\section*{包装}
+	\end{tcolorbox}
+
+	Arch Linux インストールイメージを書き込んだ、USB 3.0/2.0 対応のフラッシュドライブ。
+
+	1 本/箱
+
+	\medskip
+
+
+	\begin{tcolorbox}
+	\section*{有効期間}
+	\end{tcolorbox}
+
+	Arch Linux はローリングリリース方式を採用しており、コマンドを 1 つ実行するだけでシステムを最新版に更新できます。このため、Arch Linux のサポートは長期にわたり有効です。
+
+	\medskip
+
+
+	\begin{tcolorbox}
+	\section*{準拠規格}
+	\end{tcolorbox}
+	\begin{tabularx}{\linewidth}{@{}ll@{}}
+		\multirow{4}{*}{}{OSS ライセンス：} & GNU GPL（主）\\
+		~ & GNU LGPL \\
+		~ & BSD \\
+		~ & その他のライセンス条項 \\
+	\end{tabularx}
+
+	\medskip
+
+
+	\begin{tcolorbox}
+	\section*{承認番号}
+	\end{tcolorbox}
+
+	本説明書は CC-BY-SA 3.0 ライセンスで提供されます。
+
+	\medskip
+
+
+	\begin{tcolorbox}
+	\section*{説明書}
+	\end{tcolorbox}
+	\begin{tabularx}{\linewidth}{@{}ll@{}}
+		\multirow{2}{*}{}{編集・校閲：} & @YukariChiba\\
+		~ & @moesoha \\
+		~ & @Tibrella \\
+		グラフィック： & @YJBeetle\\
+		~ & @Isoheptane \\
+		GitHub： & isoheptane/arch-media-box\\
+	\end{tabularx}
+
+	\medskip
+
+
+	\vfill
+	\begin{flushright}
+		Arch Linux\linebreak 20230713
+		\linebreak
+		\newline
+		\begin{minipage}{0.5\textwidth}
+			\centering
+			$\vcenter{\hbox{\includegraphics[height=10mm]{archlinux-logo-with-text.eps}}}$
+		\end{minipage}
+	\end{flushright}
+
+\end{multicols*}
+\end{document}

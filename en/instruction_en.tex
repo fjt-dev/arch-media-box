@@ -1,0 +1,375 @@
+% English version of instruction.tex. Compile in this directory with xelatex.
+% Fonts: DejaVu Sans, DejaVu Serif.
+
+\documentclass{article}
+\setlength\parindent{0pt}
+\pagenumbering{gobble}
+
+\usepackage{geometry}
+\geometry{papersize={210mm,297mm}}
+\geometry{left=9mm,right=9mm,top=9mm,bottom=9mm}
+
+\usepackage{fontspec}
+\setmainfont{DejaVu Sans}[Scale=0.9]
+\newfontfamily\headingfont{DejaVu Serif}[Scale=0.9]
+
+\usepackage[svgcolors]{xcolor}
+\usepackage{longfbox}
+\usepackage{epstopdf}
+\usepackage{float}
+\usepackage{xpatch}
+\usepackage{tipa}
+\usepackage[export]{adjustbox}
+\graphicspath{{../assets/}}
+\usepackage{enumitem}
+\usepackage{mdframed}
+
+\usepackage{multirow}
+\usepackage{tabularx}
+\renewcommand\tabularxcolumn[1]{m{#1}} % for vertical centering text in X column
+
+\usepackage{multicol}
+\usepackage[most]{tcolorbox}
+\usepackage{amssymb}
+\setlength{\columnsep}{3mm}
+
+\usepackage[explicit,compact]{titlesec}
+\titleformat{\section}{\normalfont\headingfont\bfseries}{}{0pt}{\MakeUppercase{#1}}
+
+% Three-column layout whose first two columns are merged at the top
+% https://tex.stackexchange.com/questions/475466/latex-three-column-layout-merging-two-of-them-at-the-begining
+%
+\newlength{\abstractwidth}
+\newlength{\columnshrink}
+\newsavebox{\twocolinsert}
+%
+\makeatletter
+\newlength{\resized@col}
+\newcounter{column@count}
+%
+\xpatchcmd{\multi@column@out}{
+	\process@cols\mult@gfirstbox{%
+		\setbox\count@
+		\vsplit\@cclv to\dimen@
+		\set@keptmarks
+		\setbox\count@
+		\vbox to\dimen@
+		{\unvbox\count@ \ifshr@nking\vfilmaxdepth\fi}%
+	}%
+}{
+	\process@cols\mult@gfirstbox{%
+		\global\advance\c@column@count\@ne
+		\resized@col\dimen@%
+		\ifnum\c@column@count=\tw@
+				\advance\resized@col-\columnshrink
+		\fi%
+		\setbox\count@
+		\vsplit\@cclv to\resized@col
+		\set@keptmarks
+		\setbox\count@
+		\vbox to\dimen@{
+			\ifnum
+				\c@column@count=\tw@ \vspace*{\columnshrink}
+			\fi
+			\unvbox\count@
+			\ifshr@nking\vfilmaxdepth\fi
+		}%
+	}%
+}{\typeout{Success}}{\typeout{Failure}}
+\makeatother
+
+% for designing header
+\newsavebox\mysavebox
+\newenvironment{imgminipage}[2][]{%
+   \def\imgcmd{\includegraphics[width=\wd\mysavebox, height=\dimexpr\ht\mysavebox+\dp\mysavebox\relax, #1]{#2}}%
+   \begin{lrbox}{\mysavebox}%
+   \begin{minipage}%
+}{%
+   \end{minipage}
+   \end{lrbox}%
+   \sbox\mysavebox{\setlength{\fboxrule}{0pt}\fbox{\usebox\mysavebox}}%
+   \mbox{\rlap{\raisebox{-\dp\mysavebox}{\imgcmd}}\usebox\mysavebox}%
+}
+
+% "archlinux" wordmark only: crop the icon off the logo-with-text artwork
+\newcommand{\archwordmark}[1]{\includegraphics[width=#1, trim=111bp 40bp 0bp 25bp, clip, valign=m]{archlinux-logo-with-text.eps}}
+
+\renewcommand{\labelitemi}{$\blacktriangleright$}
+
+\tcbset{
+    frame code={}
+    center title,
+    left=0pt,
+    right=0pt,
+    top=6pt,
+    bottom=0pt,
+    colback=gray!40,
+    colframe=white,
+    enlarge left by=0mm,
+    boxsep=0pt,
+    arc=0pt,outer arc=0pt,
+}
+
+\begin{document}
+\begin{multicols*}{3}
+
+	\setlength{\abstractwidth}{2\linewidth}
+	\addtolength{\abstractwidth}{\columnsep}
+	\savebox{\twocolinsert}{
+	\begin{minipage}{\abstractwidth}
+		\noindent Approved: 2023-07-13
+		\newline Revised: 2019-07-06, 2020-10-31, 2021-07-04, 2021-08-14, 2023-06-10, 2023-07-13
+		\newline
+
+		\begin{mdframed}[leftline=false, rightline=false, innertopmargin=0pt, innerbottommargin=0pt, innerrightmargin=0pt, innerleftmargin=1.5em]
+			\archwordmark{0.17\abstractwidth}
+			\hfill
+			\begin{imgminipage}{header-background.eps}[c]{0.78\abstractwidth}
+				\vspace*{1.6em}
+				\hspace*{1.2em}{\LARGE Arch Linux Boxed Installation Media Insert}\par
+				\medskip
+				\hspace*{1.2em}{\bfseries Read this insert carefully and use under an administrator's supervision}\par
+				\vspace*{1.4em}
+			\end{imgminipage}
+		\end{mdframed}
+
+
+		\begin{mdframed}[hidealllines=true, innerbottommargin=.5em, innertopmargin=0pt]
+			\sffamily
+
+			{\centering WARNING \par}
+
+			\bfseries
+			Whether or not it is used alongside another operating system, installing Arch Linux carries a risk of losing all data on the disk. (See ADVERSE REACTIONS.)
+
+			The information and opinions in this insert are not intended as legal advice. Legal advice can be obtained by consulting a lawyer.
+
+			Some hardware manufacturers refuse to tell us how to write drivers for their hardware. Others require us to sign non-disclosure agreements before we can see the relevant documents, preventing us from releasing driver source code as free software. Since we are not authorized to use these documents, that hardware cannot work under Linux.
+		\end{mdframed}
+	\end{minipage}}
+	\setlength{\columnshrink}{\ht\twocolinsert}
+	\addtolength{\columnshrink}{\dp\twocolinsert}
+	\noindent\usebox{\twocolinsert}
+
+
+	\begin{tcolorbox}
+	\section*{Distribution Name}
+	\end{tcolorbox}
+	\begin{tabularx}{\linewidth}{@{}ll@{}}
+		Common name: & Arch Linux \\
+		Official name: & Arch Linux \\
+		Pronunciation: & \textipa{[a:t\textesh\ l\textsci n\textschwa ks]} \\
+	\end{tabularx}
+
+	\medskip
+
+
+	\begin{tcolorbox}
+	\section*{Composition}
+	\end{tcolorbox}
+
+	The base system of a general-purpose x86-64 GNU/Linux distribution. It follows a rolling-release model and strives to provide the latest stable versions of software. It is packaged, developed and maintained by developers of the Arch Linux community.
+
+	\medskip
+
+
+	\begin{tcolorbox}
+	\section*{Description}
+	\end{tcolorbox}
+
+	This system is an operating system based on the GNU/Linux kernel. After installation it can be booted via UEFI or Legacy boot.
+
+	\medskip
+
+
+	\begin{tcolorbox}
+	\section*{Indications (Platforms)}
+	\end{tcolorbox}
+
+	\begin{itemize}
+		\item Supported only on computers, servers and embedded devices with the x86-64 (AMD64) architecture.
+		\item Which platforms the installation media in this box suits is to be determined on actual hardware.
+	\end{itemize}
+
+
+	\begin{tcolorbox}
+	\section*{Strength}
+	\end{tcolorbox}
+
+	1 installation medium
+
+	\medskip
+
+	\begin{tcolorbox}
+	\section*{Directions for Use}
+	\end{tcolorbox}
+
+	Boot from the USB device.
+
+	Adjust the boot method to the hardware; UEFI is generally used.
+
+	Choose an installation method according to hardware performance and personal needs: generally, install manually from the command line; otherwise, use the Arch Linux installer script.
+
+	Once the base system is installed and packages are set up, a desktop environment and display manager may be chosen as appropriate.
+
+	\medskip
+
+	\begin{tcolorbox}
+	\section*{Adverse Reactions}
+	\end{tcolorbox}
+
+	Arch Linux has a bug tracking system that archives and manages software defects reported by users and developers. Each bug report is assigned a number and tracked over the long term until it is marked as fixed.
+
+	Details are available at https://bugs.archlinux.org/.
+
+	\medskip
+
+
+	\begin{tcolorbox}
+	\section*{Precautions}
+	\end{tcolorbox}
+	\begin{itemize}[leftmargin=*]
+
+		\item Meet the minimum hardware requirements
+
+		Memory and disk requirements are shown below.
+
+		{\small\begin{tabularx}{\linewidth}{|X|X|X|X|}
+			\hline
+			Type & RAM\newline (min.) & RAM\newline (rec.) & Disk \\
+			\hline
+			No desktop & 512MB & 1GB & 2GB \\
+			\hline
+			Desktop & 1GB & 2GB & 10GB \\
+			\hline
+		\end{tabularx}}
+
+		Depending on your needs, you may install with less than the configuration listed above. However, most users who ignore these recommendations fail to install.
+
+		\item Devices that require firmware
+
+		Besides device drivers, some hardware also requires firmware or microcode to be loaded before use.
+
+	\end{itemize}
+
+
+	\begin{tcolorbox}
+	\section*{Contraindications}
+	\end{tcolorbox}
+
+	If any of the following occurs or is about to occur during operation, stop immediately and prepare for system recovery.
+
+	\begin{itemize}[leftmargin=*]
+		\setlength{\itemsep}{0pt}
+		\setlength{\parskip}{0pt}
+		\setlength{\parsep}{0pt}
+
+		\item Recursive deletion from the root directory with root privileges
+		\item Using dd without confirming the device name
+		\item Formatting without confirming the device name
+		\item Using command redirection without checking
+		\item Running scripts from the internet without checking
+		\item Sustained heavy load on poorly cooled hardware
+	\end{itemize}
+
+
+	\begin{tcolorbox}
+	\section*{Interactions}
+	\end{tcolorbox}
+	\begin{itemize}[leftmargin=*]
+		\setlength{\parindent}{0pt}
+
+		\item Interaction with Windows
+
+		In a dual-boot setup, if the other operating system and Windows access the same file system, problems and data loss may occur. The real state of the file system may differ from what Windows believes it to be after ``startup'', and further writes may corrupt the file system. Therefore, in dual-boot setups, Windows ``Fast Startup'' must be disabled to avoid file system corruption.
+
+		In rare cases, running system updates in Windows has been observed to break the boot loader after a restart, leaving Arch Linux unable to boot. Also, writing boot information to the MBR of the physical disk holding Windows during installation will prevent Windows from booting normally.
+
+		\item Interaction with other Linux distributions
+
+		Mixing with Manjaro may cause the AUR to go down.
+
+	\end{itemize}
+
+
+	\begin{tcolorbox}
+	\section*{Storage}
+	\end{tcolorbox}
+
+	-40\,°C to +70\,°C
+
+	Store all installation media properly and keep them out of the reach of anyone other than the installer.
+
+	\medskip
+
+
+	\begin{tcolorbox}
+	\section*{How Supplied}
+	\end{tcolorbox}
+
+	A USB 3.0/2.0 compatible flash drive with the Arch Linux installation image written to it.
+
+	1 per box
+
+	\medskip
+
+
+	\begin{tcolorbox}
+	\section*{Shelf Life}
+	\end{tcolorbox}
+
+	Arch Linux uses a rolling-release model: a single command updates the system to the latest version. For this reason, support for Arch Linux remains valid indefinitely.
+
+	\medskip
+
+
+	\begin{tcolorbox}
+	\section*{Standards}
+	\end{tcolorbox}
+	\begin{tabularx}{\linewidth}{@{}lX@{}}
+		\multirow{4}{*}{}{Open source licenses:} & GNU GPL (primary)\\
+		~ & GNU LGPL \\
+		~ & BSD \\
+		~ & and other license terms \\
+	\end{tabularx}
+
+	\medskip
+
+
+	\begin{tcolorbox}
+	\section*{Approval Number}
+	\end{tcolorbox}
+
+	This insert is licensed under CC-BY-SA 3.0.
+
+	\medskip
+
+
+	\begin{tcolorbox}
+	\section*{About This Insert}
+	\end{tcolorbox}
+	\begin{tabularx}{\linewidth}{@{}ll@{}}
+		\multirow{2}{*}{}{Editors:} & @YukariChiba\\
+		~ & @moesoha \\
+		~ & @Tibrella \\
+		Graphics: & @YJBeetle\\
+		~ & @Isoheptane \\
+		GitHub: & isoheptane/arch-media-box\\
+	\end{tabularx}
+
+	\medskip
+
+
+	\vfill
+	\begin{flushright}
+		Arch Linux\linebreak 20230713
+		\linebreak
+		\newline
+		\begin{minipage}{0.5\textwidth}
+			\centering
+			$\vcenter{\hbox{\includegraphics[height=10mm]{archlinux-logo-with-text.eps}}}$
+		\end{minipage}
+	\end{flushright}
+
+\end{multicols*}
+\end{document}
